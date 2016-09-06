@@ -1,0 +1,625 @@
+
+IC_AUX_V2.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000003cc  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000440  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000018  00800060  00800060  00000440  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000440  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000470  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000038  00000000  00000000  000004ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000001a0  00000000  00000000  000004e4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000000e9  00000000  00000000  00000684  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000146  00000000  00000000  0000076d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000090  00000000  00000000  000008b4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000001cb  00000000  00000000  00000944  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    000000ce  00000000  00000000  00000b0f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000028  00000000  00000000  00000bdd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	7e c1       	rjmp	.+764    	; 0x30e <__vector_8>
+  12:	8c c1       	rjmp	.+792    	; 0x32c <__vector_9>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	95 c1       	rjmp	.+810    	; 0x34e <__vector_17>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	20 e0       	ldi	r18, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	a8 37       	cpi	r26, 0x78	; 120
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	02 d0       	rcall	.+4      	; 0x48 <main>
+  44:	c1 c1       	rjmp	.+898    	; 0x3c8 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <main>:
+uint16_t TickSubida = 0;
+static uint8_t PWM_canal[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+int main(void){	   
+	//Configuracion pines
+	DDRD = 0x00; //Entradas
+  48:	11 ba       	out	0x11, r1	; 17
+	DDRC = _BV(PINC3);
+  4a:	88 e0       	ldi	r24, 0x08	; 8
+  4c:	84 bb       	out	0x14, r24	; 20
+	DDRB = _BV(PINB0) | _BV(PINB1) | _BV(PINB2) | _BV(PINB3); //Pin 0 PPM, el resto PWM a implemetar
+  4e:	8f e0       	ldi	r24, 0x0F	; 15
+  50:	87 bb       	out	0x17, r24	; 23
+	//Configuramos Timer 1 (16 bits ) a unos 50ms
+	TCCR1B = 0x01; // No captura, clock/8, Normal mode
+  52:	81 e0       	ldi	r24, 0x01	; 1
+  54:	8e bd       	out	0x2e, r24	; 46
+	TIMSK = _BV(TOIE1); // Interrupcion de desborde activada
+  56:	84 e0       	ldi	r24, 0x04	; 4
+  58:	89 bf       	out	0x39, r24	; 57
+		//Canal 0
+		while(DDRD & _BV(PIND0)); //Esperamos 0 en canal 0;
+		while(!(DDRD & _BV(PIND0))); //Esperamos al 1;
+		TickSubida = TCNT1;
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+		Pulso_256us;
+  5a:	43 e0       	ldi	r20, 0x03	; 3
+		while(DDRD & _BV(PIND0)); //Esperamos 0 en canal 0;
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+		Pulso_256us;
+		PWM_canal[0] = Conversor_Rango(TCNT1 - TickSubida);
+  5c:	e1 e6       	ldi	r30, 0x61	; 97
+  5e:	f0 e0       	ldi	r31, 0x00	; 0
+  60:	5f ef       	ldi	r21, 0xFF	; 255
+	TCCR1B = 0x01; // No captura, clock/8, Normal mode
+	TIMSK = _BV(TOIE1); // Interrupcion de desborde activada
+
+    while (1){
+		//Canal 0
+		while(DDRD & _BV(PIND0)); //Esperamos 0 en canal 0;
+  62:	88 99       	sbic	0x11, 0	; 17
+  64:	fe cf       	rjmp	.-4      	; 0x62 <main+0x1a>
+		while(!(DDRD & _BV(PIND0))); //Esperamos al 1;
+  66:	88 9b       	sbis	0x11, 0	; 17
+  68:	fe cf       	rjmp	.-4      	; 0x66 <main+0x1e>
+		TickSubida = TCNT1;
+  6a:	8c b5       	in	r24, 0x2c	; 44
+  6c:	9d b5       	in	r25, 0x2d	; 45
+  6e:	90 93 6a 00 	sts	0x006A, r25
+  72:	80 93 69 00 	sts	0x0069, r24
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+  76:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+  78:	43 bf       	out	0x33, r20	; 51
+		while(DDRD & _BV(PIND0)); //Esperamos 0 en canal 0;
+  7a:	88 99       	sbic	0x11, 0	; 17
+  7c:	fe cf       	rjmp	.-4      	; 0x7a <main+0x32>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+  7e:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+  80:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[0] = Conversor_Rango(TCNT1 - TickSubida);
+  82:	8c b5       	in	r24, 0x2c	; 44
+  84:	9d b5       	in	r25, 0x2d	; 45
+  86:	20 91 69 00 	lds	r18, 0x0069
+  8a:	30 91 6a 00 	lds	r19, 0x006A
+  8e:	82 1b       	sub	r24, r18
+  90:	93 0b       	sbc	r25, r19
+  92:	58 9f       	mul	r21, r24
+  94:	90 01       	movw	r18, r0
+  96:	59 9f       	mul	r21, r25
+  98:	30 0d       	add	r19, r0
+  9a:	11 24       	eor	r1, r1
+  9c:	28 51       	subi	r18, 0x18	; 24
+  9e:	34 4e       	sbci	r19, 0xE4	; 228
+  a0:	36 95       	lsr	r19
+  a2:	27 95       	ror	r18
+  a4:	36 95       	lsr	r19
+  a6:	27 95       	ror	r18
+  a8:	36 95       	lsr	r19
+  aa:	27 95       	ror	r18
+  ac:	a5 ec       	ldi	r26, 0xC5	; 197
+  ae:	b0 e2       	ldi	r27, 0x20	; 32
+  b0:	7f d1       	rcall	.+766    	; 0x3b0 <__umulhisi3>
+  b2:	92 95       	swap	r25
+  b4:	82 95       	swap	r24
+  b6:	8f 70       	andi	r24, 0x0F	; 15
+  b8:	89 27       	eor	r24, r25
+  ba:	9f 70       	andi	r25, 0x0F	; 15
+  bc:	89 27       	eor	r24, r25
+  be:	80 83       	st	Z, r24
+		
+		//Canal 1
+		TickSubida = TCNT1;
+  c0:	8c b5       	in	r24, 0x2c	; 44
+  c2:	9d b5       	in	r25, 0x2d	; 45
+  c4:	90 93 6a 00 	sts	0x006A, r25
+  c8:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND1)); //Esperamos 0 en canal 1;
+  cc:	89 99       	sbic	0x11, 1	; 17
+  ce:	fe cf       	rjmp	.-4      	; 0xcc <main+0x84>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+  d0:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+  d2:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[1] = Conversor_Rango(TCNT1 - TickSubida);		
+  d4:	8c b5       	in	r24, 0x2c	; 44
+  d6:	9d b5       	in	r25, 0x2d	; 45
+  d8:	20 91 69 00 	lds	r18, 0x0069
+  dc:	30 91 6a 00 	lds	r19, 0x006A
+  e0:	82 1b       	sub	r24, r18
+  e2:	93 0b       	sbc	r25, r19
+  e4:	58 9f       	mul	r21, r24
+  e6:	90 01       	movw	r18, r0
+  e8:	59 9f       	mul	r21, r25
+  ea:	30 0d       	add	r19, r0
+  ec:	11 24       	eor	r1, r1
+  ee:	28 51       	subi	r18, 0x18	; 24
+  f0:	34 4e       	sbci	r19, 0xE4	; 228
+  f2:	36 95       	lsr	r19
+  f4:	27 95       	ror	r18
+  f6:	36 95       	lsr	r19
+  f8:	27 95       	ror	r18
+  fa:	36 95       	lsr	r19
+  fc:	27 95       	ror	r18
+  fe:	a5 ec       	ldi	r26, 0xC5	; 197
+ 100:	b0 e2       	ldi	r27, 0x20	; 32
+ 102:	56 d1       	rcall	.+684    	; 0x3b0 <__umulhisi3>
+ 104:	92 95       	swap	r25
+ 106:	82 95       	swap	r24
+ 108:	8f 70       	andi	r24, 0x0F	; 15
+ 10a:	89 27       	eor	r24, r25
+ 10c:	9f 70       	andi	r25, 0x0F	; 15
+ 10e:	89 27       	eor	r24, r25
+ 110:	81 83       	std	Z+1, r24	; 0x01
+
+		//Canal 2
+		TickSubida = TCNT1;
+ 112:	8c b5       	in	r24, 0x2c	; 44
+ 114:	9d b5       	in	r25, 0x2d	; 45
+ 116:	90 93 6a 00 	sts	0x006A, r25
+ 11a:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND2)); //Esperamos 0 en canal 2;
+ 11e:	8a 99       	sbic	0x11, 2	; 17
+ 120:	fe cf       	rjmp	.-4      	; 0x11e <main+0xd6>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+ 122:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+ 124:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[2] = Conversor_Rango(TCNT1 - TickSubida);
+ 126:	8c b5       	in	r24, 0x2c	; 44
+ 128:	9d b5       	in	r25, 0x2d	; 45
+ 12a:	20 91 69 00 	lds	r18, 0x0069
+ 12e:	30 91 6a 00 	lds	r19, 0x006A
+ 132:	82 1b       	sub	r24, r18
+ 134:	93 0b       	sbc	r25, r19
+ 136:	58 9f       	mul	r21, r24
+ 138:	90 01       	movw	r18, r0
+ 13a:	59 9f       	mul	r21, r25
+ 13c:	30 0d       	add	r19, r0
+ 13e:	11 24       	eor	r1, r1
+ 140:	28 51       	subi	r18, 0x18	; 24
+ 142:	34 4e       	sbci	r19, 0xE4	; 228
+ 144:	36 95       	lsr	r19
+ 146:	27 95       	ror	r18
+ 148:	36 95       	lsr	r19
+ 14a:	27 95       	ror	r18
+ 14c:	36 95       	lsr	r19
+ 14e:	27 95       	ror	r18
+ 150:	a5 ec       	ldi	r26, 0xC5	; 197
+ 152:	b0 e2       	ldi	r27, 0x20	; 32
+ 154:	2d d1       	rcall	.+602    	; 0x3b0 <__umulhisi3>
+ 156:	92 95       	swap	r25
+ 158:	82 95       	swap	r24
+ 15a:	8f 70       	andi	r24, 0x0F	; 15
+ 15c:	89 27       	eor	r24, r25
+ 15e:	9f 70       	andi	r25, 0x0F	; 15
+ 160:	89 27       	eor	r24, r25
+ 162:	82 83       	std	Z+2, r24	; 0x02
+
+		//Canal 3
+		TickSubida = TCNT1;
+ 164:	8c b5       	in	r24, 0x2c	; 44
+ 166:	9d b5       	in	r25, 0x2d	; 45
+ 168:	90 93 6a 00 	sts	0x006A, r25
+ 16c:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND3)); //Esperamos 0 en canal 3;
+ 170:	8b 99       	sbic	0x11, 3	; 17
+ 172:	fe cf       	rjmp	.-4      	; 0x170 <main+0x128>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+ 174:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+ 176:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[3] = Conversor_Rango(TCNT1 - TickSubida);
+ 178:	8c b5       	in	r24, 0x2c	; 44
+ 17a:	9d b5       	in	r25, 0x2d	; 45
+ 17c:	20 91 69 00 	lds	r18, 0x0069
+ 180:	30 91 6a 00 	lds	r19, 0x006A
+ 184:	82 1b       	sub	r24, r18
+ 186:	93 0b       	sbc	r25, r19
+ 188:	58 9f       	mul	r21, r24
+ 18a:	90 01       	movw	r18, r0
+ 18c:	59 9f       	mul	r21, r25
+ 18e:	30 0d       	add	r19, r0
+ 190:	11 24       	eor	r1, r1
+ 192:	28 51       	subi	r18, 0x18	; 24
+ 194:	34 4e       	sbci	r19, 0xE4	; 228
+ 196:	36 95       	lsr	r19
+ 198:	27 95       	ror	r18
+ 19a:	36 95       	lsr	r19
+ 19c:	27 95       	ror	r18
+ 19e:	36 95       	lsr	r19
+ 1a0:	27 95       	ror	r18
+ 1a2:	a5 ec       	ldi	r26, 0xC5	; 197
+ 1a4:	b0 e2       	ldi	r27, 0x20	; 32
+ 1a6:	04 d1       	rcall	.+520    	; 0x3b0 <__umulhisi3>
+ 1a8:	92 95       	swap	r25
+ 1aa:	82 95       	swap	r24
+ 1ac:	8f 70       	andi	r24, 0x0F	; 15
+ 1ae:	89 27       	eor	r24, r25
+ 1b0:	9f 70       	andi	r25, 0x0F	; 15
+ 1b2:	89 27       	eor	r24, r25
+ 1b4:	83 83       	std	Z+3, r24	; 0x03
+
+		//Canal 4
+		TickSubida = TCNT1;
+ 1b6:	8c b5       	in	r24, 0x2c	; 44
+ 1b8:	9d b5       	in	r25, 0x2d	; 45
+ 1ba:	90 93 6a 00 	sts	0x006A, r25
+ 1be:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND4)); //Esperamos 0 en canal 4;
+ 1c2:	8c 99       	sbic	0x11, 4	; 17
+ 1c4:	fe cf       	rjmp	.-4      	; 0x1c2 <main+0x17a>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+ 1c6:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+ 1c8:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[4] = Conversor_Rango(TCNT1 - TickSubida);
+ 1ca:	8c b5       	in	r24, 0x2c	; 44
+ 1cc:	9d b5       	in	r25, 0x2d	; 45
+ 1ce:	20 91 69 00 	lds	r18, 0x0069
+ 1d2:	30 91 6a 00 	lds	r19, 0x006A
+ 1d6:	82 1b       	sub	r24, r18
+ 1d8:	93 0b       	sbc	r25, r19
+ 1da:	58 9f       	mul	r21, r24
+ 1dc:	90 01       	movw	r18, r0
+ 1de:	59 9f       	mul	r21, r25
+ 1e0:	30 0d       	add	r19, r0
+ 1e2:	11 24       	eor	r1, r1
+ 1e4:	28 51       	subi	r18, 0x18	; 24
+ 1e6:	34 4e       	sbci	r19, 0xE4	; 228
+ 1e8:	36 95       	lsr	r19
+ 1ea:	27 95       	ror	r18
+ 1ec:	36 95       	lsr	r19
+ 1ee:	27 95       	ror	r18
+ 1f0:	36 95       	lsr	r19
+ 1f2:	27 95       	ror	r18
+ 1f4:	a5 ec       	ldi	r26, 0xC5	; 197
+ 1f6:	b0 e2       	ldi	r27, 0x20	; 32
+ 1f8:	db d0       	rcall	.+438    	; 0x3b0 <__umulhisi3>
+ 1fa:	92 95       	swap	r25
+ 1fc:	82 95       	swap	r24
+ 1fe:	8f 70       	andi	r24, 0x0F	; 15
+ 200:	89 27       	eor	r24, r25
+ 202:	9f 70       	andi	r25, 0x0F	; 15
+ 204:	89 27       	eor	r24, r25
+ 206:	84 83       	std	Z+4, r24	; 0x04
+
+		//Canal 5
+		TickSubida = TCNT1;
+ 208:	8c b5       	in	r24, 0x2c	; 44
+ 20a:	9d b5       	in	r25, 0x2d	; 45
+ 20c:	90 93 6a 00 	sts	0x006A, r25
+ 210:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND5)); //Esperamos 0 en canal 5;
+ 214:	8d 99       	sbic	0x11, 5	; 17
+ 216:	fe cf       	rjmp	.-4      	; 0x214 <main+0x1cc>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+ 218:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+ 21a:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[5] = Conversor_Rango(TCNT1 - TickSubida);
+ 21c:	8c b5       	in	r24, 0x2c	; 44
+ 21e:	9d b5       	in	r25, 0x2d	; 45
+ 220:	20 91 69 00 	lds	r18, 0x0069
+ 224:	30 91 6a 00 	lds	r19, 0x006A
+ 228:	82 1b       	sub	r24, r18
+ 22a:	93 0b       	sbc	r25, r19
+ 22c:	58 9f       	mul	r21, r24
+ 22e:	90 01       	movw	r18, r0
+ 230:	59 9f       	mul	r21, r25
+ 232:	30 0d       	add	r19, r0
+ 234:	11 24       	eor	r1, r1
+ 236:	28 51       	subi	r18, 0x18	; 24
+ 238:	34 4e       	sbci	r19, 0xE4	; 228
+ 23a:	36 95       	lsr	r19
+ 23c:	27 95       	ror	r18
+ 23e:	36 95       	lsr	r19
+ 240:	27 95       	ror	r18
+ 242:	36 95       	lsr	r19
+ 244:	27 95       	ror	r18
+ 246:	a5 ec       	ldi	r26, 0xC5	; 197
+ 248:	b0 e2       	ldi	r27, 0x20	; 32
+ 24a:	b2 d0       	rcall	.+356    	; 0x3b0 <__umulhisi3>
+ 24c:	92 95       	swap	r25
+ 24e:	82 95       	swap	r24
+ 250:	8f 70       	andi	r24, 0x0F	; 15
+ 252:	89 27       	eor	r24, r25
+ 254:	9f 70       	andi	r25, 0x0F	; 15
+ 256:	89 27       	eor	r24, r25
+ 258:	85 83       	std	Z+5, r24	; 0x05
+
+		//Canal 6
+		TickSubida = TCNT1;
+ 25a:	8c b5       	in	r24, 0x2c	; 44
+ 25c:	9d b5       	in	r25, 0x2d	; 45
+ 25e:	90 93 6a 00 	sts	0x006A, r25
+ 262:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND6)); //Esperamos 0 en canal 6;
+ 266:	8e 99       	sbic	0x11, 6	; 17
+ 268:	fe cf       	rjmp	.-4      	; 0x266 <main+0x21e>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+ 26a:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+ 26c:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[6] = Conversor_Rango(TCNT1 - TickSubida);
+ 26e:	8c b5       	in	r24, 0x2c	; 44
+ 270:	9d b5       	in	r25, 0x2d	; 45
+ 272:	20 91 69 00 	lds	r18, 0x0069
+ 276:	30 91 6a 00 	lds	r19, 0x006A
+ 27a:	82 1b       	sub	r24, r18
+ 27c:	93 0b       	sbc	r25, r19
+ 27e:	58 9f       	mul	r21, r24
+ 280:	90 01       	movw	r18, r0
+ 282:	59 9f       	mul	r21, r25
+ 284:	30 0d       	add	r19, r0
+ 286:	11 24       	eor	r1, r1
+ 288:	28 51       	subi	r18, 0x18	; 24
+ 28a:	34 4e       	sbci	r19, 0xE4	; 228
+ 28c:	36 95       	lsr	r19
+ 28e:	27 95       	ror	r18
+ 290:	36 95       	lsr	r19
+ 292:	27 95       	ror	r18
+ 294:	36 95       	lsr	r19
+ 296:	27 95       	ror	r18
+ 298:	a5 ec       	ldi	r26, 0xC5	; 197
+ 29a:	b0 e2       	ldi	r27, 0x20	; 32
+ 29c:	89 d0       	rcall	.+274    	; 0x3b0 <__umulhisi3>
+ 29e:	92 95       	swap	r25
+ 2a0:	82 95       	swap	r24
+ 2a2:	8f 70       	andi	r24, 0x0F	; 15
+ 2a4:	89 27       	eor	r24, r25
+ 2a6:	9f 70       	andi	r25, 0x0F	; 15
+ 2a8:	89 27       	eor	r24, r25
+ 2aa:	86 83       	std	Z+6, r24	; 0x06
+
+		//Canal 7
+		TickSubida = TCNT1;
+ 2ac:	8c b5       	in	r24, 0x2c	; 44
+ 2ae:	9d b5       	in	r25, 0x2d	; 45
+ 2b0:	90 93 6a 00 	sts	0x006A, r25
+ 2b4:	80 93 69 00 	sts	0x0069, r24
+		while(DDRD & _BV(PIND7)); //Esperamos 0 en canal 7;
+ 2b8:	8f 99       	sbic	0x11, 7	; 17
+ 2ba:	fe cf       	rjmp	.-4      	; 0x2b8 <main+0x270>
+		PORTB |= _BV(PINB0);  //Subimos la señal PPM
+ 2bc:	c0 9a       	sbi	0x18, 0	; 24
+		Pulso_256us;
+ 2be:	43 bf       	out	0x33, r20	; 51
+		PWM_canal[7] = Conversor_Rango(TCNT1 - TickSubida);
+ 2c0:	8c b5       	in	r24, 0x2c	; 44
+ 2c2:	9d b5       	in	r25, 0x2d	; 45
+ 2c4:	20 91 69 00 	lds	r18, 0x0069
+ 2c8:	30 91 6a 00 	lds	r19, 0x006A
+ 2cc:	82 1b       	sub	r24, r18
+ 2ce:	93 0b       	sbc	r25, r19
+ 2d0:	58 9f       	mul	r21, r24
+ 2d2:	90 01       	movw	r18, r0
+ 2d4:	59 9f       	mul	r21, r25
+ 2d6:	30 0d       	add	r19, r0
+ 2d8:	11 24       	eor	r1, r1
+ 2da:	28 51       	subi	r18, 0x18	; 24
+ 2dc:	34 4e       	sbci	r19, 0xE4	; 228
+ 2de:	36 95       	lsr	r19
+ 2e0:	27 95       	ror	r18
+ 2e2:	36 95       	lsr	r19
+ 2e4:	27 95       	ror	r18
+ 2e6:	36 95       	lsr	r19
+ 2e8:	27 95       	ror	r18
+ 2ea:	a5 ec       	ldi	r26, 0xC5	; 197
+ 2ec:	b0 e2       	ldi	r27, 0x20	; 32
+ 2ee:	60 d0       	rcall	.+192    	; 0x3b0 <__umulhisi3>
+ 2f0:	92 95       	swap	r25
+ 2f2:	82 95       	swap	r24
+ 2f4:	8f 70       	andi	r24, 0x0F	; 15
+ 2f6:	89 27       	eor	r24, r25
+ 2f8:	9f 70       	andi	r25, 0x0F	; 15
+ 2fa:	89 27       	eor	r24, r25
+ 2fc:	87 83       	std	Z+7, r24	; 0x07
+		if (PWM_canal[7] > 128){
+ 2fe:	81 38       	cpi	r24, 0x81	; 129
+ 300:	10 f0       	brcs	.+4      	; 0x306 <main+0x2be>
+			PORTC |= _BV(PINC3);
+ 302:	ab 9a       	sbi	0x15, 3	; 21
+ 304:	01 c0       	rjmp	.+2      	; 0x308 <main+0x2c0>
+		}else{
+			PORTC &= ~_BV(PINC3);
+ 306:	ab 98       	cbi	0x15, 3	; 21
+		}
+
+		//Reset Timer 0
+		TCNT1 = 0x00;
+ 308:	1d bc       	out	0x2d, r1	; 45
+ 30a:	1c bc       	out	0x2c, r1	; 44
+	}
+ 30c:	aa ce       	rjmp	.-684    	; 0x62 <main+0x1a>
+
+0000030e <__vector_8>:
+}
+   
+ISR(TIMER1_OVF_vect){
+ 30e:	1f 92       	push	r1
+ 310:	0f 92       	push	r0
+ 312:	0f b6       	in	r0, 0x3f	; 63
+ 314:	0f 92       	push	r0
+ 316:	11 24       	eor	r1, r1
+ 318:	8f 93       	push	r24
+		Estado = Conexion_Perdida;
+ 31a:	81 e0       	ldi	r24, 0x01	; 1
+ 31c:	80 93 77 00 	sts	0x0077, r24
+		//Activar Protocolo Perdida Transmision
+}
+ 320:	8f 91       	pop	r24
+ 322:	0f 90       	pop	r0
+ 324:	0f be       	out	0x3f, r0	; 63
+ 326:	0f 90       	pop	r0
+ 328:	1f 90       	pop	r1
+ 32a:	18 95       	reti
+
+0000032c <__vector_9>:
+ISR(TIMER0_OVF_vect){
+ 32c:	1f 92       	push	r1
+ 32e:	0f 92       	push	r0
+ 330:	0f b6       	in	r0, 0x3f	; 63
+ 332:	0f 92       	push	r0
+ 334:	11 24       	eor	r1, r1
+ 336:	8f 93       	push	r24
+	PORTB |= ~_BV(PINB0);  //Bajamos la señal PPM
+ 338:	88 b3       	in	r24, 0x18	; 24
+ 33a:	8e 6f       	ori	r24, 0xFE	; 254
+ 33c:	88 bb       	out	0x18, r24	; 24
+	TCCR0 = 0x00;
+ 33e:	13 be       	out	0x33, r1	; 51
+	TCNT0 = 0;				//Paramos y reiniciamos el contador;
+ 340:	12 be       	out	0x32, r1	; 50
+}
+ 342:	8f 91       	pop	r24
+ 344:	0f 90       	pop	r0
+ 346:	0f be       	out	0x3f, r0	; 63
+ 348:	0f 90       	pop	r0
+ 34a:	1f 90       	pop	r1
+ 34c:	18 95       	reti
+
+0000034e <__vector_17>:
+
+ISR(TWI_vect){
+ 34e:	1f 92       	push	r1
+ 350:	0f 92       	push	r0
+ 352:	0f b6       	in	r0, 0x3f	; 63
+ 354:	0f 92       	push	r0
+ 356:	11 24       	eor	r1, r1
+ 358:	8f 93       	push	r24
+ 35a:	ef 93       	push	r30
+ 35c:	ff 93       	push	r31
+	static uint8_t Registro = 0;
+	
+	switch(TWSR & 0xF4){
+ 35e:	81 b1       	in	r24, 0x01	; 1
+ 360:	84 7f       	andi	r24, 0xF4	; 244
+ 362:	88 38       	cpi	r24, 0x88	; 136
+ 364:	49 f0       	breq	.+18     	; 0x378 <__vector_17+0x2a>
+ 366:	18 f4       	brcc	.+6      	; 0x36e <__vector_17+0x20>
+ 368:	80 38       	cpi	r24, 0x80	; 128
+ 36a:	31 f0       	breq	.+12     	; 0x378 <__vector_17+0x2a>
+ 36c:	19 c0       	rjmp	.+50     	; 0x3a0 <__vector_17+0x52>
+ 36e:	88 3a       	cpi	r24, 0xA8	; 168
+ 370:	31 f0       	breq	.+12     	; 0x37e <__vector_17+0x30>
+ 372:	88 3b       	cpi	r24, 0xB8	; 184
+ 374:	21 f0       	breq	.+8      	; 0x37e <__vector_17+0x30>
+ 376:	14 c0       	rjmp	.+40     	; 0x3a0 <__vector_17+0x52>
+		case 0x60: break;
+		case 0x80://Recibir
+		case 0x88: Registro = TWDR;
+ 378:	83 b1       	in	r24, 0x03	; 3
+ 37a:	80 93 60 00 	sts	0x0060, r24
+		
+		case 0xA8:
+		case 0xB8: TWDR = *((uint8_t *)&Datos + Registro++);
+ 37e:	e0 91 60 00 	lds	r30, 0x0060
+ 382:	81 e0       	ldi	r24, 0x01	; 1
+ 384:	8e 0f       	add	r24, r30
+ 386:	80 93 60 00 	sts	0x0060, r24
+ 38a:	f0 e0       	ldi	r31, 0x00	; 0
+ 38c:	e5 59       	subi	r30, 0x95	; 149
+ 38e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 390:	80 81       	ld	r24, Z
+ 392:	83 b9       	out	0x03, r24	; 3
+		if(Registro >= (Numero_canales + Numero_celdas + 1)) Registro=0;
+ 394:	80 91 60 00 	lds	r24, 0x0060
+ 398:	8c 30       	cpi	r24, 0x0C	; 12
+ 39a:	10 f0       	brcs	.+4      	; 0x3a0 <__vector_17+0x52>
+ 39c:	10 92 60 00 	sts	0x0060, r1
+		case 0xC0: break;
+	}
+ 3a0:	ff 91       	pop	r31
+ 3a2:	ef 91       	pop	r30
+ 3a4:	8f 91       	pop	r24
+ 3a6:	0f 90       	pop	r0
+ 3a8:	0f be       	out	0x3f, r0	; 63
+ 3aa:	0f 90       	pop	r0
+ 3ac:	1f 90       	pop	r1
+ 3ae:	18 95       	reti
+
+000003b0 <__umulhisi3>:
+ 3b0:	a2 9f       	mul	r26, r18
+ 3b2:	b0 01       	movw	r22, r0
+ 3b4:	b3 9f       	mul	r27, r19
+ 3b6:	c0 01       	movw	r24, r0
+ 3b8:	a3 9f       	mul	r26, r19
+ 3ba:	01 d0       	rcall	.+2      	; 0x3be <__umulhisi3+0xe>
+ 3bc:	b2 9f       	mul	r27, r18
+ 3be:	70 0d       	add	r23, r0
+ 3c0:	81 1d       	adc	r24, r1
+ 3c2:	11 24       	eor	r1, r1
+ 3c4:	91 1d       	adc	r25, r1
+ 3c6:	08 95       	ret
+
+000003c8 <_exit>:
+ 3c8:	f8 94       	cli
+
+000003ca <__stop_program>:
+ 3ca:	ff cf       	rjmp	.-2      	; 0x3ca <__stop_program>
